@@ -7,7 +7,7 @@ class UtilityWidget {
     );
   }
 
-  dynamic widthSpace(double width) {
+  Widget widthSpace(double width) {
     return SizedBox(
       width: width,
     );
