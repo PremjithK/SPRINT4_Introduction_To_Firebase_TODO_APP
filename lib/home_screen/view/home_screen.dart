@@ -29,50 +29,71 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddImageTask(),
-                ));
-          },
-          icon: Icon(Icons.image),
-        )
-      ]),
+      appBar: AppBar(
+          title: const Text(
+            'VeryGood Todo App',
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddImageTask(),
+                    ));
+              },
+              icon: Icon(Icons.image),
+            )
+          ]),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 100),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 100),
         child: Form(
+          key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "Welcome to TodoApp",
+              const Text(
+                'Welcome to TodoApp',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               UtilityWidget().heightSpace(40),
               TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Task Cannot Be Blank';
+                  }
+                },
                 controller: _taskNameController,
-                decoration: InputDecoration(hintText: 'Task Name'),
+                decoration: const InputDecoration(hintText: 'Task Name'),
               ),
               UtilityWidget().heightSpace(20),
               TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Task Details Cannot Be Blank';
+                  }
+                },
                 controller: _taskDetailsController,
-                decoration: InputDecoration(hintText: 'Task Details'),
+                decoration: const InputDecoration(hintText: 'Task Details'),
               ),
               UtilityWidget().heightSpace(40),
               ElevatedButton(
                 onPressed: () async {
-                  await _todoRef.add({
-                    'task name': _taskNameController.text,
-                    'task details': _taskDetailsController.text,
-                    'userid': _auth.currentUser!.uid,
-                  });
-                  _taskNameController.clear();
-                  _taskDetailsController.clear();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Task Added Succesfully')));
+                  if (_formKey.currentState!.validate()) {
+                    await _todoRef.add({
+                      'task name': _taskNameController.text,
+                      'task details': _taskDetailsController.text,
+                      'userid': _auth.currentUser!.uid,
+                    });
+                    _taskNameController.clear();
+                    _taskDetailsController.clear();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Task Added Succesfully')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Failed To Add Task'),
+                      backgroundColor: Colors.red,
+                    ));
+                  }
                 },
                 child: Text(
                   "Add Task",
@@ -87,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                     final List<DocumentSnapshot> documents =
                         snapshot.data!.docs;
@@ -112,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           _taskDetailsController.text =
                                               doc['task details'] as String;
                                           return AlertDialog(
-                                            title: Text('Edit Task'),
+                                            title: const Text('Edit Task'),
                                             content: Column(
                                               children: [
                                                 TextField(

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignupRepo {
-  Future<void> createUser(String name, String email, String phone_no,
+  Future<void> createUser(String name, String email, String phoneNo,
       String address, String password, BuildContext context) async {
     final _auth = FirebaseAuth.instance;
     final CollectionReference userRef =
@@ -15,7 +15,7 @@ class SignupRepo {
         'userid': _auth.currentUser!.uid,
         'name': name,
         'email': email,
-        'phone': phone_no,
+        'phone': phoneNo,
         'address': address,
         'password': password,
       });
